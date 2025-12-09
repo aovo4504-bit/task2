@@ -1,71 +1,204 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Nhiệm vụ 2 — CozyHub</title>
+<title>CozyHub - Mission 2</title>
+
 <style>
-/* giống task1 */
-body {margin:0;font-family:Poppins,system-ui,sans-serif;background:#050811;color:#fff;height:100vh;display:flex;justify-content:center;align-items:center;}
-.bg{position:fixed;inset:0;background:radial-gradient(circle at top,#132033,#050811 60%,#02040A);z-index:-1;}
-.card{width:480px;max-width:92vw;background:rgba(7,11,20,.92);padding:40px 30px;border-radius:26px;text-align:center;border:1px solid rgba(0,255,255,.25);box-shadow:0 0 45px rgba(0,255,255,.25);}
-.logo{width:130px;height:130px;margin:0 auto 15px;border-radius:50%;background:url('https://raw.githubusercontent.com/aovo4504-bit/Cozyhub/refs/heads/main/IMG_0830.png') center/cover;box-shadow:0 0 20px #00eaff;}
-.title{font-size:32px;color:#00eaff;margin-bottom:10px;text-shadow:0 0 15px #00eaff;}
-.msg{margin-top:14px;font-size:16px;opacity:.9;}
-.btn{width:100%;padding:16px;margin-top:18px;background:#00c7ff;border:none;border-radius:18px;color:#001015;font-size:19px;font-weight:700;cursor:pointer;box-shadow:0 0 25px #00c7ff;transition:.2s;}
-.btn:hover{transform:scale(1.05);}
-.btn.green{background:#00ff9d;box-shadow:0 0 25px #00ff9d;}
-.btn.disabled{background:#244754!important;opacity:.4;cursor:not-allowed!important;box-shadow:none!important;}
+    body {
+        margin: 0;
+        font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #050811;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        color: #ffffff;
+    }
+
+    .bg {
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(circle at top, #151b2b 0, #050811 55%, #02040a 100%);
+        z-index: -2;
+    }
+
+    .card {
+        width: 430px;
+        max-width: 92vw;
+        background: rgba(7, 11, 20, 0.92);
+        padding: 34px 30px 30px;
+        border-radius: 26px;
+        text-align: center;
+        box-shadow:
+            0 0 45px rgba(0, 255, 255, 0.25),
+            0 0 90px rgba(0, 255, 255, 0.12);
+        border: 1px solid rgba(0,255,255,0.25);
+    }
+
+    .logo {
+        width: 110px;
+        height: 110px;
+        margin: 0 auto 16px;
+        border-radius: 50%;
+        background: url('https://raw.githubusercontent.com/aovo4504-bit/Cozyhub/refs/heads/main/IMG_0830.png')
+            center/cover;
+        box-shadow:
+            0 0 18px #00eaff,
+            0 0 40px rgba(0,255,255,0.7);
+    }
+
+    h1 {
+        font-size: 32px;
+        margin: 6px 0 10px;
+        color: #00eaff;
+        letter-spacing: 0.5px;
+        text-shadow:
+            0 0 10px rgba(0,255,255,0.6),
+            0 0 18px rgba(0,255,255,0.35);
+    }
+
+    .desc {
+        font-size: 14px;
+        opacity: 0.8;
+        margin-bottom: 10px;
+    }
+
+    .status {
+        margin-top: 4px;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .btn {
+        margin-top: 18px;
+        padding: 12px 0;
+        width: 100%;
+        font-weight: 600;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        background: #00eaff;
+        color: #001015;
+        font-size: 16px;
+        box-shadow: 0 0 24px rgba(0,255,255,0.5);
+        transition: 0.22s;
+    }
+    .btn:hover { transform: scale(1.03); }
+
+    .small {
+        margin-top: 10px;
+        font-size: 12px;
+        opacity: 0.55;
+    }
 </style>
 </head>
 <body>
+
 <div class="bg"></div>
 
 <div class="card">
-  <div class="logo"></div>
-  <div class="title" data-t="task2_title"></div>
-  <p class="msg" data-t="task2_desc"></p>
-  <p id="status" class="msg"></p>
+    <div class="logo"></div>
+    <h1 id="title">CozyHub - Mission 2</h1>
 
-  <button id="btnTask2" class="btn" onclick="openMission2()" data-t="btn_task2"></button>
-  <button id="btnKey" class="btn green disabled" data-t="btn_getkey"></button>
+    <div id="desc" class="desc"></div>
+    <div id="status" class="status"></div>
+
+    <button id="btnMission2" class="btn"></button>
+
+    <div class="small" id="hint"></div>
 </div>
 
-<script src="lang.js"></script>
 <script>
-applyLang();
+/* ============= ĐA NGÔN NGỮ ============= */
+let langRaw = (navigator.language || "en").toLowerCase();
+let lang;
+if (langRaw.startsWith("vi")) lang = "vi";
+else if (langRaw.startsWith("th")) lang = "th";
+else if (langRaw.startsWith("id")) lang = "id";
+else if (langRaw.startsWith("fil") || langRaw.startsWith("ph") || langRaw.startsWith("tl")) lang = "ph";
+else lang = "en";
 
-// chặn bỏ qua NV1
-if (localStorage.getItem("cozy_task1") !== "done") {
-  alert(TEXT.must_do_task1[LANG]);
-  location.href = "task1.html";
-}
-
-// nhận verify=2
-const qs = new URLSearchParams(location.search);
-if (qs.get("verify") === "2") {
-  localStorage.setItem("cozy_task2","done");
-  history.replaceState(null,"",location.pathname);
-}
-
-function updateStatus(){
-  const done2 = localStorage.getItem("cozy_task2") === "done";
-  if (!done2) {
-    status.innerHTML = TEXT.task2_notyet[LANG];
-    btnKey.classList.add("disabled");
-    btnKey.onclick = null;
-  } else {
-    status.innerHTML = TEXT.task2_done[LANG];
-    btnKey.classList.remove("disabled");
-    btnKey.onclick = () => location.href = "getkey.html";
+const TEXT = {
+  title: {
+    vi: "CozyHub - Nhiệm vụ 2",
+    en: "CozyHub - Mission 2",
+    th: "CozyHub - ภารกิจ 2",
+    id: "CozyHub - Misi 2",
+    ph: "CozyHub - Task 2"
+  },
+  desc: {
+    vi: "Hoàn thành nhiệm vụ 2 để nhận key.",
+    en: "Complete mission 2 to get your key.",
+    th: "ทำภารกิจ 2 ให้เสร็จเพื่อรับคีย์",
+    id: "Selesaikan misi 2 untuk mendapatkan key.",
+    ph: "Tapusin ang task 2 para makuha ang key."
+  },
+  status_need_m1: {
+    vi: "Bạn phải hoàn thành nhiệm vụ 1 trước.",
+    en: "You must complete mission 1 first.",
+    th: "คุณต้องทำภารกิจ 1 ให้เสร็จก่อน",
+    id: "Anda harus menyelesaikan misi 1 dahulu.",
+    ph: "Kailangan mo munang tapusin ang task 1."
+  },
+  status_normal: {
+    vi: "Bấm nút bên dưới để làm nhiệm vụ 2.",
+    en: "Click the button below to start mission 2.",
+    th: "กดปุ่มด้านล่างเพื่อเริ่มภารกิจ 2",
+    id: "Klik tombol di bawah untuk mulai misi 2.",
+    ph: "Pindutin ang button sa ibaba para simulan ang task 2."
+  },
+  btn_m2: {
+    vi: "Làm nhiệm vụ 2",
+    en: "Do mission 2",
+    th: "ทำภารกิจ 2",
+    id: "Kerjakan misi 2",
+    ph: "Gawin ang task 2"
+  },
+  hint: {
+    vi: "Sau khi làm xong nhiệm vụ 2, bạn sẽ được chuyển đến trang nhận key.",
+    en: "After completing mission 2, you will be redirected to the key page.",
+    th: "หลังจากทำภารกิจ 2 เสร็จ คุณจะถูกพาไปหน้า key",
+    id: "Setelah menyelesaikan misi 2, Anda akan diarahkan ke halaman key.",
+    ph: "Pagkatapos ng task 2, ire-redirect ka sa key page."
   }
+};
+
+function t(key){return TEXT[key][lang];}
+
+/* ============= LOGIC UI ============= */
+
+const statusEl = document.getElementById("status");
+const btnM2 = document.getElementById("btnMission2");
+
+document.getElementById("title").textContent = t("title");
+document.getElementById("desc").textContent = t("desc");
+document.getElementById("hint").textContent = t("hint");
+btnM2.textContent = t("btn_m2");
+
+// set cờ nhiệm vụ 1 từ query (nếu verify1 redirect qua ?task1=done)
+const qs = new URLSearchParams(location.search);
+if (qs.get("task1") === "done") {
+  localStorage.setItem("cozy_task1","done");
 }
 
-function openMission2(){
-  // 🔗 THAY BẰNG LINK LINKVERTISE NHIỆM VỤ 2
-  window.location.href = "https://linkvertise.com/YOUR_TASK2_ID";
+// chặn nếu chưa có cozy_task1
+const done1 = localStorage.getItem("cozy_task1") === "done";
+if (!done1) {
+  alert(t("status_need_m1"));
+  location.href = "task1.html";
+} else {
+  statusEl.textContent = t("status_normal");
 }
 
-updateStatus();
+/* 🚀 MỞ LINK NHIỆM VỤ 2 */
+btnM2.onclick = function(){
+  // 🔗 THAY BẰNG LINK NHIỆM VỤ 2 CỦA BẠN
+  // Linkvertise này phải trỏ tới: https://cozyhub-verify2.aovo4504.workers.dev/?verify=NV2_DONE_9988
+  window.location.href = "https://linkvertise.com/YOUR_TASK2_LINK";
+};
 </script>
 </body>
 </html>
