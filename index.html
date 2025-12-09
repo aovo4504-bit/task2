@@ -2,83 +2,70 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-
-<!-- 🌍 NGÔN NGỮ -->
-<script>
-let userLang=(navigator.language||"en").toLowerCase();
-if(userLang.startsWith("vi"))userLang="vi";else if(userLang.startsWith("th"))userLang="th";
-else if(userLang.startsWith("id"))userLang="id";else if(userLang.startsWith("fil")||userLang.startsWith("ph"))userLang="ph";
-else if(userLang.startsWith("ko"))userLang="kr";else if(userLang.startsWith("ja"))userLang="jp";else userLang="en";
-
-const TEXT={
-    task2_title:{vi:"Nhiệm vụ 2",en:"Mission 2",th:"ภารกิจ 2",id:"Misi 2",ph:"Misyon 2",kr:"미션 2",jp:"ミッション 2"},
-    task2_desc:{vi:"Hoàn thành nhiệm vụ 2 để nhận key.",en:"Complete Mission 2 to get your key.",
-        th:"ทำภารกิจ 2 เพื่อรับคีย์",id:"Selesaikan Misi 2 untuk mendapatkan key.",
-        ph:"Kumpletuhin ang Misyon 2 para makuha ang key.",
-        kr:"미션 2를 완료하면 키를 받을 수 있습니다.",
-        jp:"ミッション2を完了してキーを取得してください。"},
-    task2_open:{vi:"Mở nhiệm vụ 2",en:"Open Mission 2",th:"เปิดภารกิจ 2",id:"Buka Misi 2",ph:"Buksan Misyon 2",kr:"미션 2 열기",jp:"ミッション2を開く"},
-    task2_done:{vi:"Tôi đã làm xong nhiệm vụ 2",en:"I completed Mission 2",th:"ฉันทำภารกิจ 2 เสร็จแล้ว",
-        id:"Saya telah menyelesaikan Misi 2",ph:"Tapos ko na ang Misyon 2",kr:"미션 2 완료",jp:"ミッション2完了"},
-    task2_complete_msg:{vi:"Bạn đã hoàn thành nhiệm vụ 2!",en:"Mission 2 completed!",th:"คุณทำภารกิจ 2 สำเร็จ!",
-        id:"Misi 2 selesai!",ph:"Tapos na ang Misyon 2!",kr:"미션 2 완료!",jp:"ミッション2完了！"},
-    next_to_key:{vi:"Nhận Key →",en:"Get Key →",th:"รับคีย์ →",id:"Ambil Key →",ph:"Kunin Key →",kr:"키 받기 →",jp:"キー取得 →"},
-    must_finish_1:{vi:"Bạn phải làm nhiệm vụ 1 trước!",en:"You must complete Mission 1 first!"}
-};
-</script>
-
-<!-- 🎨 UI -->
-<style>/* dùng y như 2 trang trên */</style>
-
+<title>Nhiệm vụ 2 — CozyHub</title>
+<style>
+/* giống task1 */
+body {margin:0;font-family:Poppins,system-ui,sans-serif;background:#050811;color:#fff;height:100vh;display:flex;justify-content:center;align-items:center;}
+.bg{position:fixed;inset:0;background:radial-gradient(circle at top,#132033,#050811 60%,#02040A);z-index:-1;}
+.card{width:480px;max-width:92vw;background:rgba(7,11,20,.92);padding:40px 30px;border-radius:26px;text-align:center;border:1px solid rgba(0,255,255,.25);box-shadow:0 0 45px rgba(0,255,255,.25);}
+.logo{width:130px;height:130px;margin:0 auto 15px;border-radius:50%;background:url('https://raw.githubusercontent.com/aovo4504-bit/Cozyhub/refs/heads/main/IMG_0830.png') center/cover;box-shadow:0 0 20px #00eaff;}
+.title{font-size:32px;color:#00eaff;margin-bottom:10px;text-shadow:0 0 15px #00eaff;}
+.msg{margin-top:14px;font-size:16px;opacity:.9;}
+.btn{width:100%;padding:16px;margin-top:18px;background:#00c7ff;border:none;border-radius:18px;color:#001015;font-size:19px;font-weight:700;cursor:pointer;box-shadow:0 0 25px #00c7ff;transition:.2s;}
+.btn:hover{transform:scale(1.05);}
+.btn.green{background:#00ff9d;box-shadow:0 0 25px #00ff9d;}
+.btn.disabled{background:#244754!important;opacity:.4;cursor:not-allowed!important;box-shadow:none!important;}
+</style>
 </head>
 <body>
-
-<script>
-// chặn bypass
-if(!sessionStorage.getItem("task1_done")){
-    alert(TEXT.must_finish_1[userLang]);
-    location.href="task1.html";
-}
-</script>
-
 <div class="bg"></div>
+
 <div class="card">
+  <div class="logo"></div>
+  <div class="title" data-t="task2_title"></div>
+  <p class="msg" data-t="task2_desc"></p>
+  <p id="status" class="msg"></p>
 
-    <div class="logo"></div>
-
-    <div id="title2" class="title"></div>
-    <p id="desc2"></p>
-
-    <button id="openBtn2" class="btn" onclick="openTask2()"></button>
-    <button id="doneBtn2" class="btn green" onclick="doneTask2()"></button>
-
-    <button id="nextKey" class="btn disabled"></button>
-
-    <div id="msg2" class="msg"></div>
-
+  <button id="btnTask2" class="btn" onclick="openMission2()" data-t="btn_task2"></button>
+  <button id="btnKey" class="btn green disabled" data-t="btn_getkey"></button>
 </div>
 
+<script src="lang.js"></script>
 <script>
-title2.textContent = TEXT.task2_title[userLang];
-desc2.textContent  = TEXT.task2_desc[userLang];
-openBtn2.textContent = TEXT.task2_open[userLang];
-doneBtn2.textContent = TEXT.task2_done[userLang];
-nextKey.textContent  = TEXT.next_to_key[userLang];
+applyLang();
 
-function openTask2(){
-    window.open("YOUR_MISSION_2_LINK","_blank");
+// chặn bỏ qua NV1
+if (localStorage.getItem("cozy_task1") !== "done") {
+  alert(TEXT.must_do_task1[LANG]);
+  location.href = "task1.html";
 }
 
-function doneTask2(){
-    sessionStorage.setItem("task2_done","1");
-
-    msg2.textContent = TEXT.task2_complete_msg[userLang];
-    msg2.classList.add("show","ok");
-
-    nextKey.classList.remove("disabled");
-    nextKey.onclick = ()=> location.href="getkey.html";
+// nhận verify=2
+const qs = new URLSearchParams(location.search);
+if (qs.get("verify") === "2") {
+  localStorage.setItem("cozy_task2","done");
+  history.replaceState(null,"",location.pathname);
 }
+
+function updateStatus(){
+  const done2 = localStorage.getItem("cozy_task2") === "done";
+  if (!done2) {
+    status.innerHTML = TEXT.task2_notyet[LANG];
+    btnKey.classList.add("disabled");
+    btnKey.onclick = null;
+  } else {
+    status.innerHTML = TEXT.task2_done[LANG];
+    btnKey.classList.remove("disabled");
+    btnKey.onclick = () => location.href = "getkey.html";
+  }
+}
+
+function openMission2(){
+  // 🔗 THAY BẰNG LINK LINKVERTISE NHIỆM VỤ 2
+  window.location.href = "https://linkvertise.com/YOUR_TASK2_ID";
+}
+
+updateStatus();
 </script>
-
 </body>
 </html>
