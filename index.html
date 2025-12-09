@@ -7,91 +7,57 @@
 <style>
     body {
         margin: 0;
-        font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Poppins', system-ui, sans-serif;
         background: #050811;
         height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        overflow: hidden;
         color: #ffffff;
     }
 
     .bg {
         position: fixed;
         inset: 0;
-        background:
-            radial-gradient(circle at top, #151b2b 0, #050811 55%, #02040a 100%);
+        background: radial-gradient(circle at top, #151b2b, #050811 55%, #02040a 100%);
         z-index: -2;
     }
 
     .card {
         width: 430px;
-        max-width: 92vw;
-        background: rgba(7, 11, 20, 0.92);
-        padding: 34px 30px 30px;
+        padding: 34px;
+        background: rgba(7,11,20,0.92);
         border-radius: 26px;
         text-align: center;
-        box-shadow:
-            0 0 45px rgba(0, 255, 255, 0.25),
-            0 0 90px rgba(0, 255, 255, 0.12);
         border: 1px solid rgba(0,255,255,0.25);
+        box-shadow: 0 0 45px rgba(0,255,255,0.25);
     }
 
     .logo {
         width: 110px;
         height: 110px;
-        margin: 0 auto 16px;
         border-radius: 50%;
-        background: url('https://raw.githubusercontent.com/aovo4504-bit/Cozyhub/refs/heads/main/IMG_0830.png')
-            center/cover;
-        box-shadow:
-            0 0 18px #00eaff,
-            0 0 40px rgba(0,255,255,0.7);
+        margin: 0 auto 16px;
+        background: url('https://raw.githubusercontent.com/aovo4504-bit/Cozyhub/refs/heads/main/IMG_0830.png') center/cover;
     }
 
     h1 {
-        font-size: 32px;
-        margin: 6px 0 10px;
         color: #00eaff;
-        letter-spacing: 0.5px;
-        text-shadow:
-            0 0 10px rgba(0,255,255,0.6),
-            0 0 18px rgba(0,255,255,0.35);
-    }
-
-    .desc {
-        font-size: 14px;
-        opacity: 0.8;
+        font-size: 32px;
         margin-bottom: 10px;
-    }
-
-    .status {
-        margin-top: 4px;
-        font-size: 14px;
-        opacity: 0.9;
     }
 
     .btn {
         margin-top: 18px;
-        padding: 12px 0;
+        padding: 12px;
         width: 100%;
-        font-weight: 600;
-        border-radius: 10px;
+        font-size: 16px;
         border: none;
-        cursor: pointer;
+        border-radius: 10px;
         background: #00eaff;
         color: #001015;
-        font-size: 16px;
+        cursor: pointer;
         box-shadow: 0 0 24px rgba(0,255,255,0.5);
-        transition: 0.22s;
-    }
-    .btn:hover { transform: scale(1.03); }
-
-    .small {
-        margin-top: 10px;
-        font-size: 12px;
-        opacity: 0.55;
     }
 </style>
 </head>
@@ -101,103 +67,49 @@
 
 <div class="card">
     <div class="logo"></div>
-    <h1 id="title">CozyHub - Mission 2</h1>
-
-    <div id="desc" class="desc"></div>
-    <div id="status" class="status"></div>
-
+    <h1 id="title"></h1>
+    <p id="desc"></p>
+    <p id="status"></p>
     <button id="btnMission2" class="btn"></button>
-
-    <div class="small" id="hint"></div>
 </div>
 
 <script>
-/* ============= ĐA NGÔN NGỮ ============= */
-let langRaw = (navigator.language || "en").toLowerCase();
-let lang;
-if (langRaw.startsWith("vi")) lang = "vi";
-else if (langRaw.startsWith("th")) lang = "th";
-else if (langRaw.startsWith("id")) lang = "id";
-else if (langRaw.startsWith("fil") || langRaw.startsWith("ph") || langRaw.startsWith("tl")) lang = "ph";
-else lang = "en";
+let lang = (navigator.language || "en").toLowerCase().startsWith("vi") ? "vi" : "en";
 
 const TEXT = {
-  title: {
-    vi: "CozyHub - Nhiệm vụ 2",
-    en: "CozyHub - Mission 2",
-    th: "CozyHub - ภารกิจ 2",
-    id: "CozyHub - Misi 2",
-    ph: "CozyHub - Task 2"
-  },
+  title: { vi:"Nhiệm vụ 2", en:"Mission 2" },
   desc: {
-    vi: "Hoàn thành nhiệm vụ 2 để nhận key.",
-    en: "Complete mission 2 to get your key.",
-    th: "ทำภารกิจ 2 ให้เสร็จเพื่อรับคีย์",
-    id: "Selesaikan misi 2 untuk mendapatkan key.",
-    ph: "Tapusin ang task 2 para makuha ang key."
+    vi:"Hoàn thành nhiệm vụ 2 để nhận key.",
+    en:"Complete mission 2 to receive your key."
   },
-  status_need_m1: {
-    vi: "Bạn phải hoàn thành nhiệm vụ 1 trước.",
-    en: "You must complete mission 1 first.",
-    th: "คุณต้องทำภารกิจ 1 ให้เสร็จก่อน",
-    id: "Anda harus menyelesaikan misi 1 dahulu.",
-    ph: "Kailangan mo munang tapusin ang task 1."
+  need_m1: {
+    vi:"Bạn phải làm nhiệm vụ 1 trước.",
+    en:"You must complete mission 1 first."
   },
-  status_normal: {
-    vi: "Bấm nút bên dưới để làm nhiệm vụ 2.",
-    en: "Click the button below to start mission 2.",
-    th: "กดปุ่มด้านล่างเพื่อเริ่มภารกิจ 2",
-    id: "Klik tombol di bawah untuk mulai misi 2.",
-    ph: "Pindutin ang button sa ibaba para simulan ang task 2."
-  },
-  btn_m2: {
-    vi: "Làm nhiệm vụ 2",
-    en: "Do mission 2",
-    th: "ทำภารกิจ 2",
-    id: "Kerjakan misi 2",
-    ph: "Gawin ang task 2"
-  },
-  hint: {
-    vi: "Sau khi làm xong nhiệm vụ 2, bạn sẽ được chuyển đến trang nhận key.",
-    en: "After completing mission 2, you will be redirected to the key page.",
-    th: "หลังจากทำภารกิจ 2 เสร็จ คุณจะถูกพาไปหน้า key",
-    id: "Setelah menyelesaikan misi 2, Anda akan diarahkan ke halaman key.",
-    ph: "Pagkatapos ng task 2, ire-redirect ka sa key page."
-  }
+  btn: { vi:"Làm nhiệm vụ 2", en:"Do mission 2" }
 };
 
-function t(key){return TEXT[key][lang];}
-
-/* ============= LOGIC UI ============= */
-
-const statusEl = document.getElementById("status");
-const btnM2 = document.getElementById("btnMission2");
+function t(key){ return TEXT[key][lang]; }
 
 document.getElementById("title").textContent = t("title");
 document.getElementById("desc").textContent = t("desc");
-document.getElementById("hint").textContent = t("hint");
-btnM2.textContent = t("btn_m2");
+document.getElementById("btnMission2").textContent = t("btn");
 
-// set cờ nhiệm vụ 1 từ query (nếu verify1 redirect qua ?task1=done)
+/* Lấy flag từ verify1 */
 const qs = new URLSearchParams(location.search);
 if (qs.get("task1") === "done") {
-  localStorage.setItem("cozy_task1","done");
+    localStorage.setItem("cozy_task1","done");
 }
 
-// chặn nếu chưa có cozy_task1
-const done1 = localStorage.getItem("cozy_task1") === "done";
-if (!done1) {
-  alert(t("status_need_m1"));
-  location.href = "task1.html";
-} else {
-  statusEl.textContent = t("status_normal");
+/* Chặn người chưa làm nhiệm vụ 1 */
+if (localStorage.getItem("cozy_task1") !== "done") {
+    alert(t("need_m1"));
+    location.href = "task1.html";
 }
 
-/* 🚀 MỞ LINK NHIỆM VỤ 2 */
-btnM2.onclick = function(){
-  // 🔗 THAY BẰNG LINK NHIỆM VỤ 2 CỦA BẠN
-  // Linkvertise này phải trỏ tới: https://cozyhub-verify2.aovo4504.workers.dev/?verify=NV2_DONE_9988
-  window.location.href = "https://linkvertise.com/YOUR_TASK2_LINK";
+/* 🚀 LINK NHIỆM VỤ 2 — ĐÃ GẮN LINKVERTISE */
+document.getElementById("btnMission2").onclick = () => {
+    window.location.href = "https://linkvertise.com/1457968/xB7L2G1JCt6E?o=sharing";
 };
 </script>
 </body>
