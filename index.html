@@ -1,30 +1,62 @@
-<!doctype html><html lang="en"><head>
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CozyHub • Task 2</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-body{margin:0;font-family:Poppins,system-ui,sans-serif;background:#050811;color:#e9fbff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px}
-.card{width:min(430px,92vw);border-radius:24px;background:rgba(7,11,20,.86);border:1px solid rgba(0,234,255,.25);
-box-shadow:0 0 45px rgba(0,234,255,.22),0 0 120px rgba(0,234,255,.08);padding:26px 22px;text-align:center}
-h1{margin:0;font-size:28px;font-weight:800;color:#00eaff;text-shadow:0 0 18px rgba(0,234,255,.55)}
-p{margin:10px 0 14px;opacity:.8;font-size:13.8px;line-height:1.35}
-.btn{width:100%;border:none;border-radius:14px;padding:14px 16px;font-weight:800;cursor:pointer;color:#001018;
-background:linear-gradient(90deg,#00eaff,#7df6ff);box-shadow:0 0 30px rgba(0,234,255,.35)}
-.err{margin-top:10px;color:#ff6b6b;font-size:12.5px}
-</style></head><body>
+<title>Cozy Hub - Task 2</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#050811;color:#eaf6ff;font-family:system-ui,Poppins,sans-serif}
+.card{width:min(420px,92vw);padding:22px;border-radius:18px;border:1px solid rgba(0,229,255,.22);background:#070b17cc;text-align:center;box-shadow:0 0 50px rgba(0,229,255,.12)}
+.btn{width:100%;padding:14px;border:0;border-radius:14px;background:linear-gradient(90deg,#00e5ff,#00b7ff);font-weight:800;cursor:pointer}
+.small{opacity:.85;margin-top:10px;font-size:13px}
+</style>
+</head>
+<body>
 <div class="card">
-  <h1>Mission 2</h1>
-  <p>Mission 2 completed. You can now get your key.</p>
-  <button id="go" class="btn">Go to Get Key</button>
-  <div id="err" class="err"></div>
+  <h2 style="margin:0;color:#00e5ff">Mission 2</h2>
+  <p id="p">Complete mission 2, then click “I’m done”.</p>
+  <button class="btn" id="do">Start Mission 2</button>
+  <button class="btn" id="done" style="margin-top:10px;background:rgba(255,255,255,.08);color:#eaf6ff;border:1px solid rgba(0,229,255,.18)">I’m done</button>
+  <div class="small" id="s"></div>
 </div>
+
 <script>
-const token = new URLSearchParams(location.search).get("token") || "";
-if(!token){ document.getElementById("err").textContent="Missing token. Please redo missions."; }
-document.getElementById("go").onclick=()=>{
-  if(!token) return;
-  location.href = "https://aovo4504-bit.github.io/CozyHub.key/getkey.html?token=" + encodeURIComponent(token);
+const params=new URLSearchParams(location.search);
+const token1=(params.get("token")||"").trim();
+if(!token1){ document.getElementById("s").textContent="NO TOKEN"; }
+
+const langRaw=(navigator.language||"en").toLowerCase();
+const lang = (langRaw.startsWith("vi")?"vi":langRaw.startsWith("th")?"th":langRaw.startsWith("id")?"id":(langRaw.startsWith("fil")||langRaw.startsWith("ph")||langRaw.startsWith("tl"))?"ph":"en");
+const T={
+  p:{en:"Complete mission 2, then click “I’m done”.",vi:"Hoàn thành nhiệm vụ 2 rồi bấm “Đã xong”.",th:"ทำภารกิจ 2 ให้เสร็จแล้วกด “เสร็จแล้ว”",id:"Selesaikan misi 2 lalu klik “Selesai”.",ph:"Tapusin ang mission 2 tapos i-click “Done”."},
+  do:{en:"Start Mission 2",vi:"Làm nhiệm vụ 2",th:"เริ่มภารกิจ 2",id:"Mulai Misi 2",ph:"Simulan ang Mission 2"},
+  done:{en:"I’m done",vi:"Đã xong",th:"เสร็จแล้ว",id:"Selesai",ph:"Done"},
+  wait:{en:"Verifying…",vi:"Đang xác minh…",th:"กำลังตรวจสอบ…",id:"Memverifikasi…",ph:"Vine-verify…"},
+  err:{en:"System error. Try again.",vi:"Lỗi hệ thống. Thử lại.",th:"ระบบผิดพลาด ลองใหม่",id:"Error sistem. Coba lagi.",ph:"System error. Subukan ulit."}
+};
+document.getElementById("p").textContent=T.p[lang];
+document.getElementById("do").textContent=T.do[lang];
+document.getElementById("done").textContent=T.done[lang];
+
+document.getElementById("do").onclick=()=> {
+  localStorage.setItem("cozy_task2_clicked","1");
+  location.href="https://link-target.net/1457968/nP7uWHQKwUUq";
+};
+
+document.getElementById("done").onclick=async ()=>{
+  document.getElementById("s").textContent=T.wait[lang];
+  try{
+    const res = await fetch("https://cozyhub-verify2.aovo4504.workers.dev/exchange",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ token: token1 })
+    });
+    const data = await res.json();
+    if(!data.ok) throw 0;
+    localStorage.setItem("cozy_task2","done");
+    location.href = "https://aovo4504-bit.github.io/Cozyhub/getkey.html?token="+encodeURIComponent(data.token);
+  }catch(e){
+    document.getElementById("s").textContent=T.err[lang];
+  }
 };
 </script>
-</body></html>
+</body>
+</html>
