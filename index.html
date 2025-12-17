@@ -303,7 +303,7 @@ function hardGo(url){ window.location.replace(url); }
       return;
     }
 
-    const STATUS = "https://cozyhub-status.YOURSUBDOMAIN.workers.dev/";
+    const STATUS = "https://cozyhub-status.aovo4504.workers.dev/";
     const res = await fetch(STATUS + "status?task=2&token=" + encodeURIComponent(token));
     const data = await res.json();
 
